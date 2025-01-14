@@ -41,3 +41,47 @@ print(entry.lockoutTime.raw_values[0].decode('utf-8'))
 
 # locked: # 2025-01-03 07:53:36.012011+00:00 | [b'133803644160120109']
 # notlocked: 1601-01-01 00:00:00+00:00 | [b'0']
+
+
+# Create a container for new entries
+conn.add('ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', 'organizationalUnit')
+
+# Add a new user
+conn.add('cn=b.young,ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', 'inetOrgPerson', {'givenName': 'Beatrix', 'sn': 'Young', 'departmentNumber': 'DEV', 'telephoneNumber': 1111})
+
+# Rename DN
+conn.modify_dn(f'cn={userID},ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', f'cn={userID}')
+
+# Move
+conn.modify_dn(f'cn={userID},ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', f'cn={userID}', new_superior='ou=moved, ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org')
+
+from ldap3.utils.dn import safe_rdn
+safe_rdn('cn=b.smith,ou=moved,ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org')
+# out [cn=b.smith]
+
+# Modify
+from ldap3 import MODIFY_ADD, MODIFY_REPLACE, MODIFY_DELETE
+
+OUPath = 'OU=users,OU=MyDomain,dc=mydomain,dc=com'
+searchParameters = f'(&(objectclass=person)(cn={userID}))'
+
+class ModifyUser():
+
+    conn.search(OUPath, searchParameters, attributes=['distinguishedName']) # distinguishedName only
+    
+    DN = str(conn.entries[0].distinguishedName) # out= CN=userID,OU=users,OU=MyDomain,dc=mydomain,dc=com
+
+    # For later. Don't for loop, maybe conn.search per object OU?
+    splitDN = DN.split(',') # out list= ['CN=userID', 'OU=users', 'OU=MyDomain', 'dc=mydomain', 'dc=com']
+    
+
+
+    def addAttributes(DN):
+        conn.modify(DN, {'sn': [(MODIFY_ADD, ['Smyth'])]})
+
+    def deleteAttributes(DN):
+        conn.modify(DN, {'sn': [(MODIFY_DELETE, ['Young'])]})
+
+    def replaceAttributes(DN):
+        conn.modify(DN, {'sn': [(MODIFY_REPLACE, ['Smith'])]})
+

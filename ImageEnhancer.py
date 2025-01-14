@@ -18,5 +18,5 @@ for filename in os.listdir(path):
 
     # save:
     cleanName = os.path.splitext(filename)[0]
-    # os.path.splitext() split the path name to root and ext [0]C:\Temp\file [1].jpg
+    # os.path.splitext() split the path name to root and extension [0]=C:\Temp\file [1]=.jpg
     edit.save(f"{pathOut}/{cleanName}_edited.png")
