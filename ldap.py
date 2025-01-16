@@ -38,6 +38,7 @@ print(entry)
 
 print(entry.lockoutTime.value)
 print(entry.lockoutTime.raw_values[0].decode('utf-8'))
+print(type(entry.lockoutTime.raw_values[0].decode('utf-8')))
 
 # locked: # 2025-01-03 07:53:36.012011+00:00 | [b'133803644160120109']
 # notlocked: 1601-01-01 00:00:00+00:00 | [b'0']
