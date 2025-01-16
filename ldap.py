@@ -42,7 +42,8 @@ print(entry.lockoutTime.raw_values[0].decode('utf-8'))
 # locked: # 2025-01-03 07:53:36.012011+00:00 | [b'133803644160120109']
 # notlocked: 1601-01-01 00:00:00+00:00 | [b'0']
 
-
+print(entry)
+'''
 # Create a container for new entries
 conn.add('ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', 'organizationalUnit')
 
@@ -85,3 +86,4 @@ class ModifyUser():
     def replaceAttributes(DN):
         conn.modify(DN, {'sn': [(MODIFY_REPLACE, ['Smith'])]})
 
+'''
