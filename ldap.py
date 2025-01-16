@@ -23,7 +23,7 @@ def connectADServer(server, userID, OUPath):
 # output: [CN=gladyart,CN=Users,DC=mydomain,DC=com]
 user = 'gladyart'
 
-searchParameters = f'(&(objectclass=person)(cn={user}))'
+searchParameters = f'(&(objectclass=person)(cn={userID}))'
 # specify attr, will use on user page
 # output is sorted alfabetically by key
 ## for later:
@@ -43,7 +43,7 @@ print(type(entry.lockoutTime.raw_values[0].decode('utf-8')))
 # locked: # 2025-01-03 07:53:36.012011+00:00 | [b'133803644160120109']
 # notlocked: 1601-01-01 00:00:00+00:00 | [b'0']
 
-print(entry)
+
 '''
 # Create a container for new entries
 conn.add('ou=ldap3-tutorial,dc=demo1,dc=freeipa,dc=org', 'organizationalUnit')
