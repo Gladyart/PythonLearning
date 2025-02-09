@@ -23,20 +23,28 @@ def connectADServer(server, userID, OUPath):
 # output: [CN=gladyart,CN=Users,DC=mydomain,DC=com]
 user = 'gladyart'
 
-searchParameters = f'(&(objectclass=person)(cn={userID}))'
+searchParameters = f'(&(objectclass=person)(cn={user}))'
 # specify attr, will use on user page
 # output is sorted alfabetically by key
 ## for later:
 # searchParameters = f'(&(objectclass=person)(cn=*{searched}*))'
 # searchParameters = f'(&(givenName={firstName}*)(mail=*@example.org))'
 
-conn.search(OUPath, searchParameters, attributes=['accountExpires', 'description', 'displayName','lastLogon', 'lockoutTime', 'mail', 'manager', 'pwdLastSet', 'sAMAccountName'])
+conn.search(OUPath, searchParameters, attributes=['accountExpires', 'description', 'displayName', 'distinguishedName','lastLogon', 'lockoutTime', 'mail', 'manager', 'pwdLastSet', 'sAMAccountName'])
 # other attr: Enabled, PasswordExpired, MemberOf, 
-    
+   
 entry = conn.entries[0]
 print(entry)
-
+ 
 print(entry.lockoutTime.value)
+if entry.lockoutTime != None:
+    print('Lck=none')
+    conn.modify(f'{entry.distinguishedName}', {'lockoutTime': [(MODIFY_REPLACE, [0])]})
+print(entry.lockoutTime)
+print(entry.lockoutTime.value)
+print(entry.lockoutTime.raw_values)
+#print(entry.lockoutTime.raw_values[0])
+#print(entry.lockoutTime.raw_values[1])
 print(entry.lockoutTime.raw_values[0].decode('utf-8'))
 print(type(entry.lockoutTime.raw_values[0].decode('utf-8')))
 
