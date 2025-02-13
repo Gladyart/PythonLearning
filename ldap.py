@@ -29,8 +29,9 @@ searchParameters = f'(&(objectclass=person)(cn={user}))'
 ## for later:
 # searchParameters = f'(&(objectclass=person)(cn=*{searched}*))'
 # searchParameters = f'(&(givenName={firstName}*)(mail=*@example.org))'
+userAttributes = ['accountExpires', 'badPwdCount', 'cn','description', 'displayName', 'distinguishedName', 'GivenName', 'HomeDirectory', 'HomeDrive', 'lastLogon', 'lockoutTime', 'mail', 'manager', 'pwdLastSet', 'sAMAccountName', 'sn', 'userAccountControl']
 
-conn.search(OUPath, searchParameters, attributes=['accountExpires', 'description', 'displayName', 'distinguishedName','lastLogon', 'lockoutTime', 'mail', 'manager', 'pwdLastSet', 'sAMAccountName'])
+conn.search(OUPath, searchParameters, attributes=userAttributes)
 # other attr: Enabled, PasswordExpired, MemberOf, 
    
 entry = conn.entries[0]
@@ -41,16 +42,33 @@ if entry.lockoutTime != None:
     print('Lck=none')
     conn.modify(f'{entry.distinguishedName}', {'lockoutTime': [(MODIFY_REPLACE, [0])]})
 print(entry.lockoutTime)
-print(entry.lockoutTime.value)
-print(entry.lockoutTime.raw_values)
-#print(entry.lockoutTime.raw_values[0])
-#print(entry.lockoutTime.raw_values[1])
 print(entry.lockoutTime.raw_values[0].decode('utf-8'))
 print(type(entry.lockoutTime.raw_values[0].decode('utf-8')))
 
 # locked: # 2025-01-03 07:53:36.012011+00:00 | [b'133803644160120109']
 # notlocked: 1601-01-01 00:00:00+00:00 | [b'0']
 
+print(f"current =  {entry.userAccountControl}")
+if entry.userAccountControl == 514:
+    conn.modify(f'{entry.distinguishedName}',
+                {'userAccountControl': [(MODIFY_REPLACE, [512])]})
+elif entry.userAccountControl == 66050:
+    conn.modify(f'{entry.distinguishedName}',
+                {'userAccountControl': [(MODIFY_REPLACE, [66048])]})
+    
+conn.search(OUPath, searchParameters, attributes=userAttributes) 
+entry = conn.entries[0]    
+print(f"En - {entry.userAccountControl}")
+if entry.userAccountControl == 512:
+    conn.modify(f'{entry.distinguishedName}',
+                {'userAccountControl': [(MODIFY_REPLACE, [514])]})
+elif entry.userAccountControl == 66048:
+    conn.modify(f'{entry.distinguishedName}',
+                {'userAccountControl': [(MODIFY_REPLACE, [66050])]})
+    
+conn.search(OUPath, searchParameters, attributes=userAttributes) 
+entry = conn.entries[0]    
+print(f"Dis - {entry.userAccountControl}")    
 
 '''
 # Create a container for new entries
